@@ -1,4 +1,4 @@
-#include "Common.hlsli" // ���̴������� include ��� ����
+#include "Common.hlsli" // 쉐이더에서도 include 사용 가능
 
 Texture2D g_texture0 : register(t0);
 SamplerState g_sampler : register(s0);
@@ -47,9 +47,21 @@ float4 main(PixelShaderInput input) : SV_TARGET
     // Rim Lighting
     // OpenGL SuperBible 7th Edition, Ch13. Rendering Techniques
     
+    // '테두리'의 위치 확인 필요
+    // 화면 방향 벡터 기준으로 normal이 90도에 가까운 녀석들 (dot)
+    // - (1 - dot) 를 통해 테두리에 가까운 녀석들을 판별
+    // - 해당 부분을 pow 하여 '더 날카롭게' 테두리에 있는 녀석들만 선정 가능하다
+    // - 이후 rim color와 strength를 적용
+    float rim = 1.0 - dot(toEye, input.normalWorld);
+    
+    if(useSmoothstep)
+        rim = smoothstep(0.0, 1.0, rim);
+    
+    color += ((rimColor * pow(rim, rimPower)) * rimStrength);
+    
+    
     // Smoothstep
     // https://thebookofshaders.com/glossary/?search=smoothstep
-
     
 
     return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
