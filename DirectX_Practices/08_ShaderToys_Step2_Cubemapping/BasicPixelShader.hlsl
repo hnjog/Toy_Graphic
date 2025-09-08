@@ -1,4 +1,4 @@
-#include "Common.hlsli" // ½¦ÀÌ´õ¿¡¼­µµ include »ç¿ë °¡´É
+#include "Common.hlsli" // ì‰ì´ë”ì—ì„œë„ include ì‚¬ìš© ê°€ëŠ¥
 
 Texture2D g_texture0 : register(t0);
 SamplerState g_sampler : register(s0);
@@ -43,6 +43,13 @@ float4 main(PixelShaderInput input) : SV_TARGET
     {
         color += ComputeSpotLight(light[i], material, input.posWorld, input.normalWorld, toEye);
     }
+    
+    float rim = 1.0 - dot(toEye, input.normalWorld);
+    
+    if (useSmoothstep)
+        rim = smoothstep(0.0, 1.0, rim);
+    
+    color += ((rimColor * pow(rim, rimPower)) * rimStrength);
 
     return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
 }

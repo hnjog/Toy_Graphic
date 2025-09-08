@@ -413,6 +413,15 @@ void ExampleApp::Render() {
 }
 
 void ExampleApp::UpdateGUI() {
+    ImGui::SliderFloat("Rim Strength",
+                       &m_BasicPixelConstantBufferData.rimStrength, 0.0f,
+                       10.0f);
+    ImGui::Checkbox("Use Smoothstep",
+                    &m_BasicPixelConstantBufferData.useSmoothstep);
+    ImGui::SliderFloat3("Rim Color", &m_BasicPixelConstantBufferData.rimColor.x,
+                        0.0f, 1.0f);
+    ImGui::SliderFloat("Rim Power", &m_BasicPixelConstantBufferData.rimPower,
+                       0.01f, 10.0f);
 
     ImGui::Checkbox("Use Texture", &m_BasicPixelConstantBufferData.useTexture);
     ImGui::Checkbox("Wireframe", &m_drawAsWire);
