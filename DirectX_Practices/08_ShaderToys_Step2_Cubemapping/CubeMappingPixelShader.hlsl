@@ -1,10 +1,10 @@
-#include "Common.hlsli" // ½¦ÀÌ´õ¿¡¼­µµ include »ç¿ë °¡´É
+#include "Common.hlsli" // ì‰ì´ë”ì—ì„œë„ include ì‚¬ìš© ê°€ëŠ¥
 
 TextureCube g_textureCube0 : register(t0);
 SamplerState g_sampler : register(s0);
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
-    // ÁÖÀÇ: ÅØ½ºÃç ÁÂÇ¥°¡ float3 ÀÔ´Ï´Ù.
-    return g_textureCube0.Sample(g_sampler, input.posWorld.xyz);
+    // ì£¼ì˜: í…ìŠ¤ì¶° ì¢Œí‘œê°€ float3 ì…ë‹ˆë‹¤.
+    return g_textureCube0.Sample(g_sampler, normalize(input.posWorld.xyz));
 }
