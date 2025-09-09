@@ -1,7 +1,8 @@
-#include "Common.hlsli" // ½¦ÀÌ´õ¿¡¼­µµ include »ç¿ë °¡´É
+#include "Common.hlsli" // ì‰ì´ë”ì—ì„œë„ include ì‚¬ìš© ê°€ëŠ¥
 
 Texture2D g_texture0 : register(t0);
 // TODO:
+TextureCube g_textureCube1 : register(t1);
 
 SamplerState g_sampler : register(s0);
 
@@ -46,8 +47,12 @@ float4 main(PixelShaderInput input) : SV_TARGET
         color += ComputeSpotLight(light[i], material, input.posWorld, input.normalWorld, toEye);
     }
 
-    // reflect(±¤¼±ÀÌ µé¾î¿À´Â ¹æÇâ, ³ë¸Ö º¤ÅÍ)
+    // Normalì— í•´ë‹¹í•˜ëŠ” íë¸Œë§µ ì¢Œí‘œê°’ ì‚¬ìš©
+    //color = g_textureCube1.Sample(g_sampler, input.normalWorld.xyz).xyz;
+    
+    // reflect(ê´‘ì„ ì´ ë“¤ì–´ì˜¤ëŠ” ë°©í–¥, ë…¸ë©€ ë²¡í„°)
     // https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-reflect
+    color = g_textureCube1.Sample(g_sampler, reflect(-toEye, input.normalWorld)).xyz;
     
     return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
 }

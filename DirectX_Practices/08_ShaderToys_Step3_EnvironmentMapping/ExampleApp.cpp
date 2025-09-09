@@ -1,4 +1,4 @@
-﻿#include "ExampleApp.h"
+#include "ExampleApp.h"
 
 #include <directxtk/DDSTextureLoader.h> // 큐브맵 읽을 때 필요
 #include <tuple>
@@ -28,7 +28,7 @@ void ExampleApp::InitializeCubeMapping() {
     auto atribumDiffuseFilename = L"./CubemapTextures/Atrium_diffuseIBL.dds";
 
     // .dds 파일 읽어들여서 초기화
-    CreateCubemapTexture(skyboxFilename, m_cubeMapping.cubemapResourceView);
+    CreateCubemapTexture(nightPathFilename, m_cubeMapping.cubemapResourceView);
 
     m_cubeMapping.cubeMesh = std::make_shared<Mesh>();
 
@@ -103,14 +103,14 @@ bool ExampleApp::Initialize() {
 
     // Geometry 정의
 
-    vector<MeshData> meshes = {GeometryGenerator::MakeSphere(0.3f, 100, 100)};
+    //vector<MeshData> meshes = {GeometryGenerator::MakeSphere(0.3f, 100, 100)};
 
     // 젤다 모델 다운로드 경로
     // https://f3d.app/doc/GALLERY.html
     // you can download them here. 클릭
 
-    //auto meshes =
-    //    GeometryGenerator::ReadFromFile("c:/zelda/", "zeldaPosed001.fbx");
+    auto meshes =
+        GeometryGenerator::ReadFromFile("E:/Toy_Graphic/DirectX_Practices/model/f3d-data/zelda/source/", "zeldaPosed001.fbx");
 
     // GLTF 샘플 모델들
     // https://github.com/KhronosGroup/glTF-Sample-Models
@@ -369,9 +369,10 @@ void ExampleApp::Render() {
             0, 1, mesh->vertexConstantBuffer.GetAddressOf());
 
         // TODO: 물체 렌더링할 때 큐브맵도 같이 사용
-        ID3D11ShaderResourceView *resViews[1] = {
-            mesh->textureResourceView.Get()};
-        m_context->PSSetShaderResources(0, 1, resViews);
+        ID3D11ShaderResourceView *resViews[2] = {
+            mesh->textureResourceView.Get(),
+            m_cubeMapping.cubemapResourceView.Get()};
+        m_context->PSSetShaderResources(0, 2, resViews);
 
         m_context->PSSetConstantBuffers(
             0, 1, mesh->pixelConstantBuffer.GetAddressOf());
