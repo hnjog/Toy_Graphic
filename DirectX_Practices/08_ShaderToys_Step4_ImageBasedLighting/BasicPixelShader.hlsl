@@ -1,4 +1,4 @@
-#include "Common.hlsli" // ½¦ÀÌ´õ¿¡¼­µµ include »ç¿ë °¡´É
+#include "Common.hlsli" // ì‰ì´ë”ì—ì„œë„ include ì‚¬ìš© ê°€ëŠ¥
 
 Texture2D g_texture0 : register(t0);
 TextureCube g_diffuseCube : register(t1);
@@ -46,11 +46,19 @@ float4 main(PixelShaderInput input) : SV_TARGET
         color += ComputeSpotLight(light[i], material, input.posWorld, input.normalWorld, toEye);
     }
 
-    // ½±°Ô ÀÌÇØÇÒ ¼ö ÀÖ´Â °£´ÜÇÑ ±¸ÇöÀÔ´Ï´Ù.
-    // IBL°ú ´Ù¸¥ ½¦ÀÌµù ±â¹ı(¿¹: Æş ½¦ÀÌµù)À» °°ÀÌ »ç¿ëÇÒ ¼öµµ ÀÖ½À´Ï´Ù.
-    // Âü°í: https://www.shadertoy.com/view/lscBW4
+    // ì‰½ê²Œ ì´í•´í•  ìˆ˜ ìˆëŠ” ê°„ë‹¨í•œ êµ¬í˜„ì…ë‹ˆë‹¤.
+    // IBLê³¼ ë‹¤ë¥¸ ì‰ì´ë”© ê¸°ë²•(ì˜ˆ: í ì‰ì´ë”©)ì„ ê°™ì´ ì‚¬ìš©í•  ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.
+    // ì°¸ê³ : https://www.shadertoy.com/view/lscBW4
     
+    float4 diffuse = g_diffuseCube.Sample(g_sampler, input.normalWorld);
+    diffuse.xyz *= material.diffuse;
+    
+    float4 specular = g_specularCube.Sample(g_sampler, reflect(-toEye, input.normalWorld));
+    
+    specular *= pow((specular.x + specular.y + specular.z) / 3.0, material.shininess);
+    specular.xyz *= material.specular;
+    
+    color = diffuse.xyz + specular.xyz;
 
-    
     return useTexture ? float4(color, 1.0) * g_texture0.Sample(g_sampler, input.texcoord) : float4(color, 1.0);
 }
