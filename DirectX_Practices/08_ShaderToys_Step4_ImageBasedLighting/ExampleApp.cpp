@@ -1,4 +1,4 @@
-﻿#include "ExampleApp.h"
+#include "ExampleApp.h"
 
 #include <directxtk/DDSTextureLoader.h> // 큐브맵 읽을 때 필요
 #include <tuple>
@@ -33,8 +33,9 @@ void ExampleApp::InitializeCubeMapping() {
         L"./CubemapTextures/Stonewall_diffuseIBL.dds";
 
     // .dds 파일 읽어들여서 초기화
-    CreateCubemapTexture(atribumDiffuseFilename, m_cubeMapping.diffuseResView);
-    CreateCubemapTexture(atribumSpecularFilename,
+    CreateCubemapTexture(stonewallDiffuseFilename,
+                         m_cubeMapping.diffuseResView);
+    CreateCubemapTexture(stonewallSpecularFilename,
                          m_cubeMapping.specularResView);
 
     m_cubeMapping.cubeMesh = std::make_shared<Mesh>();
@@ -110,15 +111,16 @@ bool ExampleApp::Initialize() {
 
     // Geometry 정의
 
-    vector<MeshData> meshes = {GeometryGenerator::MakeSphere(0.3f, 100, 100)};
-    meshes[0].textureFilename = "ojwD8.jpg";
+    /*vector<MeshData> meshes = {GeometryGenerator::MakeSphere(0.3f, 100, 100)};
+    meshes[0].textureFilename = "ojwD8.jpg";*/
 
     // 젤다 모델 다운로드 경로
     // https://f3d.app/doc/GALLERY.html
     // you can download them here. 클릭
 
-    // auto meshes =
-    //     GeometryGenerator::ReadFromFile("c:/zelda/", "zeldaPosed001.fbx");
+    auto meshes = GeometryGenerator::ReadFromFile(
+        "E:/Toy_Graphic/DirectX_Practices/model/f3d-data/zelda/source/",
+        "zeldaPosed001.fbx");
 
     // GLTF 샘플 모델들
     // https://github.com/KhronosGroup/glTF-Sample-Models
